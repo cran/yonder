@@ -1,9 +1,18 @@
-get_variable <- function(x) {
-  get(x, envir = parent.frame(2), inherits = FALSE)
+get_caller <- function(gen = 1) {
+  paste0(sys.call(sys.parent() - gen)[[1]], "()")
 }
 
-get_caller <- function() {
-  paste0(sys.call(sys.parent() - 1)[[1]], "()")
+get_variable <- function(x) {
+  g_env <- parent.frame(2)
+
+  if (is.symbol(g_env[[x]]) && !nzchar(g_env[[x]])) {
+    stop(
+      "invalid argument in `", get_caller(2), "`, please specify `", x, "`",
+      call. = FALSE
+    )
+  }
+
+  g_env[[x]]
 }
 
 assert_id <- function() {
@@ -29,6 +38,20 @@ assert_id <- function() {
     stop(
       "invalid argument in `", fun, "`, `id` must be a non-zero length ",
       "character string",
+      call. = FALSE
+    )
+  }
+}
+
+assert_label <- function() {
+  label <- get_variable("label")
+  fun <- get_caller()
+
+  if (!(is.null(label) || is_tag(label) ||
+        is_strictly_list(label) || is.atomic(label))) {
+    stop(
+      "invalid argument in `", fun, "`, `label` must be a tag element, ",
+      "character string, list, or NULL",
       call. = FALSE
     )
   }
@@ -121,6 +144,18 @@ assert_possible <- function(x, possible) {
     stop(
       "invalid argument in `", fun, "`, `", arg, "` must be one ",
       "of ", items,
+      call. = FALSE
+    )
+  }
+}
+
+assert_found <- function(x) {
+  if (missing(x)) {
+    arg <- as.character(match.call()[[2]])
+    fun <- get_caller()
+
+    stop(
+      "invalid argument in `", fun, "`, please specify `", arg, "`",
       call. = FALSE
     )
   }

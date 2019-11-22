@@ -54,16 +54,16 @@ radioInput <- function(id, choices = NULL, values = choices,
   assert_choices()
   assert_selected(length = 1)
 
-  radios <- map_radios(choices, values, selected, id, inline)
+  dep_attach({
+    radios <- map_radios(choices, values, selected, id, inline)
 
-  component <- tags$div(
-    class = "yonder-radio",
-    id = id,
-    radios,
-    ...
-  )
-
-  attach_dependencies(component)
+    tags$div(
+      class = "yonder-radio",
+      id = id,
+      radios,
+      ...
+    )
+  })
 }
 
 #' @rdname radioInput
@@ -98,6 +98,10 @@ updateRadioInput <- function(id, choices = NULL, values = choices,
 }
 
 map_radios <- function(choices, values, selected, parent_id, inline) {
+  if (is.null(choices) && is.null(values)) {
+    return(NULL)
+  }
+
   selected <- values %in% selected
 
   Map(
@@ -180,17 +184,17 @@ radiobarInput <- function(id, choices, values = choices, selected = values[[1]],
   assert_choices()
   assert_selected(length = 1)
 
-  radios <- map_radiobuttons(choices, values, selected, id)
+  dep_attach({
+    radios <- map_radiobuttons(choices, values, selected, id)
 
-  component <- tags$div(
-    class = "yonder-radiobar btn-group btn-group-toggle d-flex",
-    id = id,
-    `data-toggle` = "buttons",
-    ...,
-    radios
-  )
-
-  attach_dependencies(component)
+    tags$div(
+      class = "yonder-radiobar btn-group btn-group-toggle d-flex",
+      id = id,
+      `data-toggle` = "buttons",
+      ...,
+      radios
+    )
+  })
 }
 
 #' @rdname radiobarInput
@@ -206,17 +210,23 @@ updateRadiobarInput <- function(id, choices = NULL, values = choices,
   radios <- map_radiobuttons(choices, values, selected, id)
 
   content <- coerce_content(radios)
+  selected <- coerce_selected(selected)
   enable <- coerce_enable(enable)
   disable <- coerce_disable(disable)
 
   session$sendInputMessage(id, list(
     content = content,
+    selected = selected,
     enable = enable,
     disable = disable
   ))
 }
 
 map_radiobuttons <- function(choices, values, selected, parent_id) {
+  if (is.null(choices) && is.null(values)) {
+    return(NULL)
+  }
+
   selected <- values %in% selected
 
   Map(

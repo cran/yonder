@@ -1,7 +1,7 @@
 Package: yonder
 Type: Package
 Title: A Reactive Web Framework Built on 'shiny'
-Version: 0.1.1
+Version: 0.1.2
 Authors@R: c(
     person("Nathan", "Teetor", role = c("aut", "cre"),
       email = "nathanteetor@gmail.com"),
@@ -17,7 +17,7 @@ Authors@R: c(
       comment = "bs-custom-file-input library")
     )
 Description: Build 'shiny' applications with the latest Bootstrap components
-    and design utilities. Includes refreshed reactive inputs and outputs. 
+    and design utilities. Includes refreshed reactive inputs and outputs.
     Use responsive layouts to design and construct applications for devices
     of all sizes.
 License: GPL-3
@@ -31,7 +31,7 @@ Imports: htmltools, magrittr, utils
 Suggests: testthat (>= 2.1.0), knitr, rmarkdown
 VignetteBuilder: knitr
 NeedsCompilation: no
-Packaged: 2019-05-28 22:06:50 UTC; nteetor
+Packaged: 2019-11-22 06:21:53 UTC; nteetor
 Author: Nathan Teetor [aut, cre],
   The Bootstrap Authors [cph] (Bootstrap library),
   Twitter, Inc [cph] (Bootstrap library),
@@ -40,4 +40,4 @@ Author: Nathan Teetor [aut, cre],
   Johann Servoire [ctb, cph] (bs-custom-file-input library)
 Maintainer: Nathan Teetor <nathanteetor@gmail.com>
 Repository: CRAN
-Date/Publication: 2019-05-31 15:40:03 UTC
+Date/Publication: 2019-11-22 09:10:02 UTC

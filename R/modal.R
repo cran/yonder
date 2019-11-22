@@ -10,11 +10,11 @@
 #' @param id A character string specifying the id of the modal, when closed
 #'   `input[[id]]` is set to `TRUE`.
 #'
-#' @param title A character string or tag element specifying the title of the
-#'   modal.
-#'
 #' @param ... Unnamed values passed as tag elements to the body of the modal.
 #'   or named values passed as HTML attributes to the body element of the
+#'   modal.
+#'
+#' @param header A character string or tag element specifying the header of the
 #'   modal.
 #'
 #' @param footer A character string or tag element specifying the footer of the
@@ -71,17 +71,17 @@
 #' ### Simple modal
 #'
 #' modal(
-#'   id = NULL,
-#'   title = "Title",
+#'   id = "simple",
+#'   header = h5("Title"),
 #'   p("Cras placerat accumsan nulla.")
 #' )
 #'
 #' ### Modal with container body
 #'
 #' modal(
-#'   id = NULL,
+#'   id = "more_complex",
 #'   size = "lg",
-#'   title = "More complex",
+#'   header = h5("More complex"),
 #'   container(
 #'     columns(
 #'       column("Cras placerat accumsan nulla."),
@@ -94,80 +94,84 @@
 #'   )
 #' )
 #'
-modal <- function(id, title, ..., footer = NULL, center = FALSE, size = "md",
-                  fade = TRUE) {
+modal <- function(id, ..., header = NULL, footer = NULL, center = FALSE,
+                  size = "md", fade = TRUE) {
   assert_id()
   assert_possible(size, c("sm", "md", "lg", "xl"))
 
-  if (missing(title)) {
-    stop(
-      "invalid argument in `modal()`, please specify `title`",
-      call. = FALSE
-    )
-  }
+  dep_attach({
+    args <- list(...)
 
-  args <- list(...)
+    if (!is.null(header)) {
+      formatted_tags <- list(
+        h1 = function(...) tags$h1(class = "modal-title", ...),
+        h2 = function(...) tags$h2(class = "modal-title", ...),
+        h3 = function(...) tags$h3(class = "modal-title", ...),
+        h4 = function(...) tags$h4(class = "modal-title", ...),
+        h5 = function(...) tags$h5(class = "modal-title", ...),
+        h6 = function(...) tags$h6(class = "modal-title", ...)
+      )
 
-  title <- tag_class_add(
-    if (!is_tag(title)) tags$h5(title) else title,
-    "modal-title"
-  )
+      header <- eval(
+        substitute(header),
+        envir = list2env(formatted_tags, envir = parent.frame())
+      )
+    }
 
-  header <- tags$div(
-    class = "modal-header",
-    title,
-    tags$button(
-      type = "button",
-      class = "close",
-      `data-dismiss` = "modal",
-      `aria-label` = "Close",
-      tags$span(
-        `aria-hidden` = "true",
-        HTML("&times;")
+    header <- tags$div(
+      class = "modal-header",
+      header,
+      tags$button(
+        type = "button",
+        class = "close",
+        `data-dismiss` = "modal",
+        `aria-label` = "Close",
+        tags$span(
+          `aria-hidden` = "true",
+          HTML("&times;")
+        )
       )
     )
-  )
 
-  if (!is.null(footer)) {
-    footer <- tags$div(
-      class = "modal-footer",
+    if (!is.null(footer)) {
+      footer <- tags$div(
+        class = "modal-footer",
+        footer
+      )
+    }
+
+    content <- tags$div(
+      class = "modal-content",
+      header,
+      tag_attributes_add(
+        tags$div(
+          class = "modal-body",
+          unnamed_values(args)
+        ),
+        named_values(args)
+      ),
       footer
     )
-  }
 
-  content <-tags$div(
-    class = "modal-content",
-    header,
-    tag_attributes_add(
-      tags$div(
-        class = "modal-body",
-        unnamed_values(args)
-      ),
-      named_values(args)
-    ),
-    footer
-  )
-
-  component <- tags$div(
-    class = str_collate(
-      "yonder-modal modal",
-      if (fade) "fade"
-    ),
-    id = id,
-    tabindex = "-1",
-    role = "dialog",
     tags$div(
       class = str_collate(
-        "modal-dialog",
-        if (center) "modal-dialog-centered",
-        if (!is.null(size) && size != "md") paste0("modal-", size)
+        "yonder-modal modal",
+        if (fade) "fade"
       ),
-      role = "document",
-      content
+      id = id,
+      tabindex = "-1",
+      role = "dialog",
+      tags$div(
+        class = str_collate(
+          "modal-dialog",
+          if (center) "modal-dialog-centered",
+          if (!is.null(size) && size != "md") paste0("modal-", size)
+        ),
+        role = "document",
+        content
+      )
     )
-  )
-
-  component
+  })
 }
 
 #' @rdname modal

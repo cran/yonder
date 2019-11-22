@@ -80,16 +80,16 @@ checkboxInput <- function(id, choices = NULL, values = choices, selected = NULL,
   assert_id()
   assert_choices()
 
-  checkboxes <- map_checkboxes(choices, values, selected, inline)
+  dep_attach({
+    checkboxes <- map_checkboxes(choices, values, selected, inline)
 
-  component <- tags$div(
-    class = "yonder-checkbox",
-    id = id,
-    checkboxes,
-    ...
-  )
-
-  attach_dependencies(component)
+    tags$div(
+      class = "yonder-checkbox",
+      id = id,
+      checkboxes,
+      ...
+    )
+  })
 }
 
 #' @rdname checkboxInput
@@ -127,16 +127,16 @@ switchInput <- function(id, choices, values = choices, selected = NULL, ...) {
   assert_id()
   assert_choices()
 
-  switches <- map_checkboxes(choices, values, selected, FALSE, TRUE)
+  dep_attach({
+    switches <- map_checkboxes(choices, values, selected, FALSE, TRUE)
 
-  component <- tags$div(
-    class = "yonder-checkbox",
-    id = id,
-    switches,
-    ...
-  )
-
-  attach_dependencies(component)
+    tags$div(
+      class = "yonder-checkbox",
+      id = id,
+      switches,
+      ...
+    )
+  })
 }
 
 #' @rdname checkboxInput
@@ -170,6 +170,10 @@ updateSwitchInput <- function(id, choices = NULL, values = choices,
 
 map_checkboxes <- function(choices, values, selected, inline,
                            switches = FALSE) {
+  if (is.null(choices) && is.null(values)) {
+    return(NULL)
+  }
+
   selected <- values %in% selected
 
   Map(
@@ -265,17 +269,17 @@ checkbarInput <- function(id, choices = NULL, values = choices,
   assert_id()
   assert_choices()
 
-  checkboxes <- map_checkbuttons(choices, values, selected)
+  dep_attach({
+    checkboxes <- map_checkbuttons(choices, values, selected)
 
-  component <- tags$div(
-    class = "yonder-checkbar btn-group btn-group-toggle d-flex",
-    id = id,
-    `data-toggle` = "buttons",
-    checkboxes,
-    ...
-  )
-
-  attach_dependencies(component)
+    tags$div(
+      class = "yonder-checkbar btn-group btn-group-toggle d-flex",
+      id = id,
+      `data-toggle` = "buttons",
+      checkboxes,
+      ...
+    )
+  })
 }
 
 #' @rdname checkbarInput
@@ -303,6 +307,10 @@ updateCheckbarInput <- function(id, choices = NULL, values = choices,
 }
 
 map_checkbuttons <- function(choices, values, selected) {
+  if (is.null(choices) && is.null(values)) {
+    return(NULL)
+  }
+
   selected <- values %in% selected
 
   Map(

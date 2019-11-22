@@ -14,7 +14,7 @@ the navigation bar.}
 defaults to \code{NULL}, in which case nothing is added.}
 
 \item{collapse}{One of \code{"sm"}, \code{"md"}, \code{"lg"}, \code{"xl"}, or \code{NULL} specifying
-the breakpoint at which the navbar collapes, defaults to \code{NULL}, in which
+the breakpoint at which the navbar collaspes, defaults to \code{NULL}, in which
 case the navbar is always expanded.}
 }
 \description{
@@ -73,6 +73,6 @@ div(
 \seealso{
 Other layout functions: \code{\link{column}},
   \code{\link{fieldset}}, \code{\link{flex}},
-  \code{\link{responsive}}
+  \code{\link{responsive}}, \code{\link{webpage}}
 }
 \concept{layout functions}

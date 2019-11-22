@@ -1,10 +1,12 @@
 #' Select inputs
 #'
+#' @description
+#'
 #' Create a select input. Select elements typically appear as a simple menu of
-#' choices and may have one or more selected values, see the `multiple`
-#' argument. A group select input is a select input with one or two additional
-#' components. These addon components are used to change the reactivity or value
-#' of the input, see Details for more information.
+#' choices and may have one selected choice. A group select input is a select
+#' input with one or two additional components. These addon components are used
+#' to change the reactivity or value of the input, see Details for more
+#' information.
 #'
 #' @inheritParams checkboxInput
 #'
@@ -14,7 +16,10 @@
 #'   choices, defaults to `choices`.
 #'
 #' @param selected One of `values` indicating the default value of the input,
-#'   defaults to `values[[1]]`.
+#'   defaults to `NULL`.
+#'
+#' @param placeholder A character string specifying the placeholder text of
+#'   the select input, defaults to `NULL`.
 #'
 #' @param left,right A character vector specifying static addons or
 #'   [buttonInput()] or [dropdown()] elements specifying dynamic addons. Addons
@@ -69,32 +74,34 @@
 #'   width(10)
 #'
 selectInput <- function(id, choices = NULL, values = choices,
-                        selected = values[[1]], ...) {
+                        selected = NULL, ..., placeholder = NULL) {
   assert_id()
   assert_choices()
   assert_selected(length = 1)
 
-  items <- map_selectitems(choices, values, selected)
+  dep_attach({
+    items <- map_selectitems(choices, values, selected)
 
-  component <- tags$div(
-    class = "yonder-select btn-group",
-    id = id,
-    tags$input(
-      type = "text",
-      class = "form-control custom-select",
-      `data-toggle` = "dropdown",
-      placeholder = choices[values %in% selected][1]
-    ),
     tags$div(
-      class = "dropdown-menu",
-      items
-    ),
-    tags$div(class = "valid-feedback"),
-    tags$div(class = "invalid-feedback"),
-    ...
-  )
-
-  attach_dependencies(component)
+      class = "yonder-select",
+      id = id,
+      tags$input(
+        type = "text",
+        class = "form-control custom-select",
+        `data-toggle` = "dropdown",
+        `data-boundary` = "window",
+        placeholder = placeholder,
+        `data-original-placeholder` = placeholder
+      ),
+      tags$div(
+        class = "dropdown-menu",
+        items
+      ),
+      tags$div(class = "valid-feedback"),
+      tags$div(class = "invalid-feedback"),
+      ...
+    )
+  })
 }
 
 #' @rdname selectInput
@@ -129,6 +136,10 @@ updateSelectInput <- function(id, choices = NULL, values = choices,
 }
 
 map_selectitems <- function(choices, values, selected) {
+  if (is.null(choices) && is.null(values)) {
+    return(NULL)
+  }
+
   selected <- values %in% selected
 
   Map(
@@ -165,25 +176,25 @@ groupSelectInput <- function(id, choices, values = choices,
     force = TRUE
   )
 
-  options <- map_options(choices, values, selected)
-  left <- addon_left(left)
-  right <- addon_right(right)
+  dep_attach({
+    options <- map_options(choices, values, selected)
+    left <- addon_left(left)
+    right <- addon_right(right)
 
-  component <- tags$div(
-    class = "yonder-group-select input-group",
-    id = id,
-    left,
-    tags$select(
-      class = "custom-select",
-      options
-    ),
-    right,
-    tags$div(class = "valid-feedback"),
-    tags$div(class = "invalid-feedback"),
-    ...
-  )
-
-  attach_dependencies(component)
+    tags$div(
+      class = "yonder-group-select input-group",
+      id = id,
+      left,
+      tags$select(
+        class = "custom-select",
+        options
+      ),
+      right,
+      tags$div(class = "valid-feedback"),
+      tags$div(class = "invalid-feedback"),
+      ...
+    )
+  })
 }
 
 #' @rdname selectInput
@@ -218,6 +229,10 @@ updateGroupSelectInput <- function(id, choices = NULL, values = choices,
 }
 
 map_options <- function(choices, values, selected) {
+  if (is.null(choices) && is.null(values)) {
+    return(NULL)
+  }
+
   selected <- values %in% selected
 
   Map(
@@ -265,4 +280,3 @@ addon_right <- function(right) {
     )
   }
 }
-

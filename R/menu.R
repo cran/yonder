@@ -1,6 +1,6 @@
 #' Menu inputs
 #'
-#' A togglable dropdown menu input. Menu inputs may be used as standalone
+#' A toggleable dropdown menu input. Menu inputs may be used as standalone
 #' reactive inputs or within a [navInput()]. For building custom, more complex
 #' dropdown elements please see [dropdown()].
 #'
@@ -66,59 +66,68 @@ menuInput <- function(id, label, choices = NULL, values = choices,
   assert_possible(direction, c("up", "right", "down", "left"))
   assert_possible(align, c("right", "left"))
 
-  items <- map_menuitems(choices, values, selected)
+  dep_attach({
+    items <- map_menuitems(choices, values, selected)
 
-  component <- tags$div(
-    class = str_collate(
-      "yonder-menu",
-      paste0("drop", direction)
-    ),
-    id = id,
-    tags$button(
-      class = "btn btn-grey dropdown-toggle",
-      type = "button",
-      `data-toggle` = "dropdown",
-      `aria-haspopup` = "true",
-      `aria-expanded` = "false",
-      label
-    ),
-    ...,
     tags$div(
       class = str_collate(
-        "dropdown-menu",
-        if (align == "right") "dropdown-menu-right"
+        "yonder-menu",
+        paste0("drop", direction)
       ),
-      items
+      id = id,
+      tags$button(
+        class = "btn btn-grey dropdown-toggle",
+        type = "button",
+        `data-toggle` = "dropdown",
+        `aria-haspopup` = "true",
+        `aria-expanded` = "false",
+        label
+      ),
+      ...,
+      tags$div(
+        class = str_collate(
+          "dropdown-menu",
+          if (align == "right") "dropdown-menu-right"
+        ),
+        items
+      )
     )
-  )
-
-  attach_dependencies(component)
+  })
 }
 
 #' @rdname menuInput
 #' @export
-updateMenuInput <- function(id, choices = NULL, values = choices,
+updateMenuInput <- function(id, label = NULL, choices = NULL, values = choices,
                             selected = NULL, enable = NULL, disable = NULL,
                             session = getDefaultReactiveDomain()) {
   assert_id()
+  assert_label()
   assert_choices()
   assert_selected(length = 1)
   assert_session()
 
   items <- map_menuitems(choices, values, selected)
 
+  label <- coerce_content(label)
   content <- coerce_content(items)
+  selected <- coerce_selected(selected)
   enable <- coerce_enable(enable)
   disable <- coerce_disable(disable)
 
-  session$sentInputMessage(id, list(
+  session$sendInputMessage(id, list(
+    label = label,
     content = content,
+    selected = selected,
     enable = enable,
     disable = disable
   ))
 }
 
 map_menuitems <- function(choices, values, selected) {
+  if (is.null(choices) && is.null(values)) {
+    return(NULL)
+  }
+
   selected <- values %in% selected
 
   Map(

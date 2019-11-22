@@ -37,6 +37,13 @@
 #'
 #' @param session A reactive context, defaults to [getDefaultReactiveDomain()].
 #'
+#' @details
+#'
+#' **Tooltips**
+#'
+#' To remove a button or link input's tooltip pass an empty tooltip,
+#' `tooltip()`, to `updateButtonInput()` or `updateLinkInput()`.
+#'
 #' @family inputs
 #' @export
 #' @examples
@@ -120,34 +127,36 @@
 buttonInput <- function(id, label, ..., stretch = FALSE, download = FALSE,
                         tooltip = NULL) {
   assert_id()
+  assert_label()
 
-  component <- (if (download) tags$a else tags$button)(
-    class = str_collate(
-      "yonder-button",
-      "btn btn-grey",
-      if (stretch) "stretched-link",
-      if (download) "shiny-download-link"
-    ),
-    type = "button",
-    role = "button",
-    href = if (download) "",
-    `_target` = if (download) NA,
-    download = if (download) NA,
-    id = id,
-    label,
-    ...,
-    autocomplete = "off"
-  )
+  dep_attach({
+    component <- (if (download) tags$a else tags$button)(
+      class = str_collate(
+        "yonder-button",
+        "btn btn-grey",
+        if (stretch) "stretched-link",
+        if (download) "shiny-download-link"
+      ),
+      type = "button",
+      role = "button",
+      href = if (download) "",
+      `_target` = if (download) NA,
+      download = if (download) NA,
+      id = id,
+      label,
+      ...,
+      autocomplete = "off"
+    )
 
-  component <- tag_tooltip_add(component, tooltip)
-
-  attach_dependencies(component)
+    tag_tooltip_add(component, tooltip)
+  })
 }
 
 #' @rdname buttonInput
 #' @export
 updateButtonInput <- function(id, label = NULL, value = NULL,
                               disable = NULL, enable = NULL,
+                              tooltip = NULL,
                               session = getDefaultReactiveDomain()) {
   assert_id()
   assert_session()
@@ -168,7 +177,8 @@ updateButtonInput <- function(id, label = NULL, value = NULL,
     content = content,
     value = value,
     disable = disable,
-    enable = enable
+    enable = enable,
+    tooltip = tooltip
   ))
 }
 
@@ -178,32 +188,34 @@ updateButtonInput <- function(id, label = NULL, value = NULL,
 linkInput <- function(id, label, ..., stretch = FALSE, download = FALSE,
                       tooltip = NULL) {
   assert_id()
+  assert_label()
 
-  component <- (if (download) tags$a else tags$button)(
-    class = str_collate(
-      "yonder-link",
-      "btn",
-      if (!download) "btn-link",
-      if (stretch) "stretched-link",
-      if (download) "shiny-download-link"
-    ),
-    href = if (download) "",
-    `_target` = if (download) NA,
-    download = if (download) NA,
-    id = id,
-    label,
-    ...
-  )
+  dep_attach({
+    component <- (if (download) tags$a else tags$button)(
+      class = str_collate(
+        "yonder-link",
+        "btn",
+        if (!download) "btn-link",
+        if (stretch) "stretched-link",
+        if (download) "shiny-download-link"
+      ),
+      href = if (download) "",
+      `_target` = if (download) NA,
+      download = if (download) NA,
+      id = id,
+      label,
+      ...
+    )
 
-  component <- tag_tooltip_add(component, tooltip)
-
-  attach_dependencies(component)
+    tag_tooltip_add(component, tooltip)
+  })
 }
 
 #' @rdname buttonInput
 #' @export
 updateLinkInput <- function(id, label = NULL, value = NULL,
                             enable = NULL, disable = NULL,
+                            tooltip = NULL,
                             session = getDefaultReactiveDomain())  {
   assert_id()
   assert_session()
@@ -228,7 +240,8 @@ updateLinkInput <- function(id, label = NULL, value = NULL,
     content = content,
     value = value,
     enable = enable,
-    disable = disable
+    disable = disable,
+    tooltip = tooltip
   ))
 }
 
@@ -238,8 +251,8 @@ updateLinkInput <- function(id, label = NULL, value = NULL,
 #'
 #' @inheritParams buttonInput
 #'
-#' @param labels A character vector specifying the labels for each button in the
-#'   group.
+#' @param choices A character vector specifying the labels for each button in
+#'   the group.
 #'
 #' @param values A vector of values specifying the values of each button in the
 #'   group, defaults to `labels`.
@@ -258,7 +271,7 @@ updateLinkInput <- function(id, label = NULL, value = NULL,
 #'
 #' buttonGroupInput(
 #'   id = "group1",
-#'   labels = c("Once", "Twice", "Thrice"),
+#'   choices = c("Once", "Twice", "Thrice"),
 #'   values = c(1, 2, 3)
 #' )
 #'
@@ -266,14 +279,29 @@ updateLinkInput <- function(id, label = NULL, value = NULL,
 #'
 #' buttonGroupInput(
 #'   id = "group2",
-#'   labels = c("Button 1", "Button 2", "Button 3")
+#'   choices = c("Button 1", "Button 2", "Button 3")
 #' ) %>%
 #'   background("blue") %>%
 #'   width("1/3")
 #'
-buttonGroupInput <- function(id, labels = NULL, values = labels, ...) {
+buttonGroupInput <- function(id, choices = NULL, values = choices, ...) {
+  args <- list(...)
+
+  if ("labels" %in% names(args)) {
+    warning(
+      "invalid argument in `buttonGroupInput()`, ",
+      "`labels` has been deprecated, please use `choices`"
+    )
+
+    choices <- args$labels
+    if (is.null(values)) {
+      values <- args$labels
+    }
+    args$labels <- NULL
+  }
+
   assert_id()
-  assert_labels()
+  assert_choices()
 
   shiny::registerInputHandler(
     type = "yonder.button.group",
@@ -283,29 +311,31 @@ buttonGroupInput <- function(id, labels = NULL, values = labels, ...) {
     force = TRUE
   )
 
-  buttons <- map_buttons(labels, values)
+  dep_attach({
+    buttons <- map_buttons(choices, values)
 
-  component <- tags$div(
-    class = "yonder-button-group btn-group",
-    id = id,
-    role = "group",
-    buttons,
-    ...
-  )
+    bg <- tags$div(
+      class = "yonder-button-group btn-group",
+      id = id,
+      role = "group",
+      buttons,
+      unnamed_values(args)
+    )
 
-  attach_dependencies(component)
+    tag_attributes_add(bg, named_values(args))
+  })
 }
 
 #' @rdname buttonGroupInput
 #' @export
-updateButtonGroupInput <- function(id, labels = NULL, values = labels,
+updateButtonGroupInput <- function(id, choices = NULL, values = choices,
                                    enable = NULL, disable = NULL,
                                    session = getDefaultReactiveDomain()) {
   assert_id()
-  assert_labels()
+  assert_choices()
   assert_session()
 
-  buttons <- map_buttons(labels, values)
+  buttons <- map_buttons(choices, values)
 
   content <- coerce_content(buttons)
   enable <- coerce_enable(enable)
@@ -318,9 +348,13 @@ updateButtonGroupInput <- function(id, labels = NULL, values = labels,
   ))
 }
 
-map_buttons <- function(labels, values) {
+map_buttons <- function(choices, values) {
+  if (is.null(choices) && is.null(values)) {
+    return(NULL)
+  }
+
   Map(
-    label = labels,
+    label = choices,
     value = values,
     function(label, value) {
       tags$button(

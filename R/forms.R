@@ -32,12 +32,20 @@
 #'   button and the value of the form input when the button is clicked,
 #'   defaults to `label`.
 #'
+#' @param submit One of `TRUE` or `FALSE` or a character string specifying
+#'   whether to trigger a form submission, defaults to `FALSE`. If a character
+#'   string, the form is submitted and the reactive value passed is the character
+#'   string specified.
+#'
 #' @details
 #'
 #' When `inline` is `TRUE` you may want to adjust the right margin of each child
 #' element for viewports larger than mobile, `margin(<TAG>, right = c(sm = 2))`,
 #' see [margin()]. You only need to apply extra space for larger viewports
 #' because inline forms do not take effect on small viewports.
+#'
+#' Use `updateFormInput()` to submit a form input. This will cause all the form's
+#' child inputs to update.
 #'
 #' @section Frozen inputs with scope:
 #'
@@ -104,32 +112,57 @@
 formInput <- function(id, ..., inline = FALSE) {
   assert_id()
 
-  component <- tags$form(
-    class = str_collate(
-      "yonder-form",
-      if (inline) "form-inline"
-    ),
-    id = id,
-    ...
-  )
-
-  attach_dependencies(component)
+  dep_attach({
+    tags$form(
+      class = str_collate(
+        "yonder-form",
+        if (inline) "form-inline"
+      ),
+      id = id,
+      ...
+    )
+  })
 }
 
 #' @rdname formInput
 #' @export
 formSubmit <- function(label, value = label, ...) {
-  tags$button(
-    class = "yonder-form-submit btn btn-blue",
-    value = value,
-    label,
-    ...
-  )
+  dep_attach({
+    tags$button(
+      class = "yonder-form-submit btn btn-blue",
+      value = value,
+      label,
+      ...
+    )
+  })
+}
+
+#' @rdname formInput
+#' @export
+updateFormInput <- function(id, submit = FALSE,
+                            session = getDefaultReactiveDomain()) {
+  assert_id()
+  assert_session()
+
+  if (!(is.logical(submit) || is.character(submit)) ||
+        (is.character(submit) && length(submit) > 1)) {
+    stop(
+      "invalid argument in `updateFormInput()`, `submit` must be one of ",
+      "TRUE or FALSE or a character string",
+      call. = FALSE
+    )
+  }
+
+  submit <- coerce_submit(submit)
+
+  session$sendInputMessage(id, list(
+    submit = submit
+  ))
 }
 
 #' Input labels, help text, and formatting to inputs
 #'
-#' Form groups are a way of labelling an input. Form rows are similar to
+#' Form groups are a way of labeling an input. Form rows are similar to
 #' [columns()]s, but include additional styles intended for forms. The
 #' flexibility provided by form rows and groups means you can confidently
 #' develop shiny applications for devices and screens of varying sizes.
@@ -148,8 +181,8 @@ formSubmit <- function(label, value = label, ...) {
 #'   For **formRow**, any number of `formGroup`s or additional named arguments
 #'   passed as HTML attributes to the parent element.
 #'
-#' @param width A [responsive] argument. One of `1:12` or "auto" specifying a
-#'   column width for the form group, defaults to `NULL`.
+#' @param width A [responsive] argument. One of `1:12`, `"content"`, or
+#'   `"equal"` specifying a column width for the form group, defaults to `NULL`.
 #'
 #' @family layout
 #' @export
@@ -195,6 +228,9 @@ formSubmit <- function(label, value = label, ...) {
 #'   background("grey")
 #'
 formGroup <- function(label, input, ..., help = NULL, width = NULL) {
+  assert_found(label)
+  assert_found(input)
+
   if (!is_tag(input) && !is_strictly_list(input)) {
     stop(
       "invalid argument in `formGroup()`, `input` must be a tag element or list",
@@ -202,38 +238,41 @@ formGroup <- function(label, input, ..., help = NULL, width = NULL) {
     )
   }
 
-  build <- column(width = width)
+  col_classes <- if (!is.null(width)) column(width = width)$attribs$class
 
-  if (build$attribs$class != "col") {
-    build$attribs$class <- sub("^col\\s+", "", build$attribs$class)
-  }
-
-  width <- resp_construct(width, c(1:12, "auto"))
-  classes <- resp_classes(width, "col")
-
-  component <- tags$div(
-    class = str_collate(
-      "form-group",
-      classes
-    ),
-    ...,
-    tags$label(label),
-    input,
-    if (!is.null(help)) {
-      tags$small(
-        class = "form-text text-muted",
-        help
-      )
+  dep_attach({
+    if (is_tag(label) && tag_name_is(label, "label")) {
+      # do nothing
+    } else {
+      label <- tags$label(coerce_content(label))
     }
-  )
 
-  attach_dependencies(component)
+    if (is.character(help)) {
+      help <- coerce_content(help)
+    }
+
+    tags$div(
+      class = str_collate(
+        "form-group",
+        col_classes
+      ),
+      ...,
+      label,
+      input,
+      if (!is.null(help)) {
+        tags$small(
+          class = "form-text text-muted",
+          help
+        )
+      }
+    )
+  })
 }
 
 #' @rdname formGroup
 #' @export
 formRow <- function(...) {
-  attach_dependencies(
+  dep_attach({
     tags$div(class = "form-row", ...)
-  )
+  })
 }

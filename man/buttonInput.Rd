@@ -12,13 +12,15 @@ buttonInput(id, label, ..., stretch = FALSE, download = FALSE,
   tooltip = NULL)
 
 updateButtonInput(id, label = NULL, value = NULL, disable = NULL,
-  enable = NULL, session = getDefaultReactiveDomain())
+  enable = NULL, tooltip = NULL,
+  session = getDefaultReactiveDomain())
 
 linkInput(id, label, ..., stretch = FALSE, download = FALSE,
   tooltip = NULL)
 
 updateLinkInput(id, label = NULL, value = NULL, enable = NULL,
-  disable = NULL, session = getDefaultReactiveDomain())
+  disable = NULL, tooltip = NULL,
+  session = getDefaultReactiveDomain())
 
 tooltip(..., placement = "top", fade = TRUE)
 }
@@ -64,6 +66,12 @@ shown and fades out when hidden, defaults to \code{TRUE}.}
 Button inputs are useful as triggers for reactive or observer expressions.
 The reactive value of a button input begins as \code{NULL}, but subsequently is
 the number of clicks.
+}
+\details{
+\strong{Tooltips}
+
+To remove a button or link input's tooltip pass an empty tooltip,
+\code{tooltip()}, to \code{updateButtonInput()} or \code{updateLinkInput()}.
 }
 \examples{
 

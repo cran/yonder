@@ -1,12 +1,52 @@
-attach_dependencies <- function(x) {
-  attachDependencies(x, dependency_yonder())
+flags <- new.env(parent = emptyenv())
+
+flag_get <- function(x) get0(x = x, envir = flags, inherits = FALSE)
+
+flag_set <- function(x, value) assign(x = x, value = value, envir = flags)
+
+dep_fetch <- function() {
+  if (is.null(flag_get("deps")) || !flag_get("deps")) {
+    flag_set("deps", 1)
+    dep_yonder()
+  }
 }
 
-dependency_yonder <- function() {
+dep_complete <- function() {
+  flag_set("deps", NULL)
+}
+
+dep_attach <- function(tag) {
+  deps <- dep_fetch()
+
+  if (!is.null(deps)) {
+    on.exit(dep_complete())
+  }
+
+  force(tag)
+
+  if (length(deps)) {
+    tag <- htmltools::attachDependencies(tag, deps)
+    tag <- htmltools::tagAppendChild(tag, dep_meta())
+    tag
+  } else {
+    tag
+  }
+}
+
+dep_meta <- function() {
+  tags$head(
+    tags$meta(
+      name = "viewport",
+      content = "width=device-width, initial-scale=1, shrink-to-fit=no"
+    )
+  )
+}
+
+dep_yonder <- function() {
   list(
     htmlDependency(
       name = "jquery",
-      version = "3.3.1",
+      version = "3.4.1",
       src = c(
         file = system.file("www/jquery", package = "yonder"),
         href = "yonder/jquery"

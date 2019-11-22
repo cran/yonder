@@ -41,7 +41,9 @@ d3 <- function(...) d(3, ...)
 d4 <- function(...) d(4, ...)
 
 d <- function(level, ...) {
-  attach_dependencies(tags$h1(class = paste0("display-", level)))
+  dep_attach({
+    tags$h1(class = paste0("display-", level), ...)
+  })
 }
 
 #' Jumbotron
@@ -72,17 +74,22 @@ d <- function(level, ...) {
 #' )
 #'
 jumbotron <- function(..., title = NULL, subtitle = NULL) {
-  component <- tags$div(
-    class = "jumbotron",
-    if (!is.null(title)) d3(title),
-    if (!is.null(subtitle)) tags$p(class = "lead", subtitle),
-    if (length(named_values(list(...))) > 0) {
-      tags$hr(class = "my-4")
-    },
-    ...
-  )
+  dep_attach({
+    divider <- NULL
 
-  attach_dependencies(component)
+    if (!(is.null(title) && is.null(subtitle)) &&
+        length(unnamed_values(list(...))) > 0) {
+      divider <- tags$hr(class = "my-4")
+    }
+
+    tags$div(
+      class = "jumbotron",
+      if (!is.null(title)) d3(title),
+      if (!is.null(subtitle)) tags$p(class = "lead", subtitle),
+      divider,
+      ...
+    )
+  })
 }
 
 #' Responsive images and figures
@@ -104,18 +111,22 @@ jumbotron <- function(..., title = NULL, subtitle = NULL) {
 #' @family components
 #' @export
 img <- function(src, ...) {
-  attach_dependencies(
+  assert_found(src)
+
+  dep_attach({
     tags$img(
       class = "img-fluid",
       src = src,
       ...
     )
-  )
+  })
 }
 
 #' @rdname img
 #' @export
 figure <- function(image, caption = NULL, ...) {
+  assert_found(image)
+
   if (!is_tag(image)) {
     stop(
       "invalid argument in `figure()`, `image` must be a tag element",
@@ -123,7 +134,7 @@ figure <- function(image, caption = NULL, ...) {
     )
   }
 
-  attach_dependencies(
+  dep_attach({
     tags$figure(
       class = "figure",
       tag_class_add(image, "figure-img"),
@@ -135,7 +146,7 @@ figure <- function(image, caption = NULL, ...) {
       },
       ...
     )
-  )
+  })
 }
 
 #' Blockquotes
@@ -163,13 +174,13 @@ figure <- function(image, caption = NULL, ...) {
 #'   "But to love something despite.",
 #'   "To know the flaws and love them too.",
 #'   "That is rare and pure and perfect.",
-#'   source = tags$span(
+#'   source = list(
 #'     "Patrick Rothfuss,", tags$cite("The Wise Man's Fear")
 #'   )
 #' )
 #'
 blockquote <- function(..., source = NULL, align = "left") {
-  attach_dependencies(
+  dep_attach({
     tags$blockquote(
       class = str_collate(
         "blockquote",
@@ -180,7 +191,7 @@ blockquote <- function(..., source = NULL, align = "left") {
         tags$footer(class = "blockquote-footer", source)
       }
     )
-  )
+  })
 }
 
 #' Scrollable code snippets
@@ -213,12 +224,9 @@ blockquote <- function(..., source = NULL, align = "left") {
 #' )
 #'
 pre <- function(...) {
-  attach_dependencies(
-    tags$pre(
-      class = "pre-scrollable",
-      ...
-    )
-  )
+  dep_attach({
+    tags$pre(class = "pre-scrollable", ...)
+  })
 }
 
 #' Group and label multiple inputs
@@ -271,22 +279,22 @@ fieldset <- function(..., legend = NULL) {
     )
   }
 
-  args <- list(...)
+  dep_attach({
+    args <- list(...)
 
-  component <- tags$fieldset(
-    class = "form-group",
-    if (!is.null(legend)) {
-      tags$legend(
-        class = "col-form-legend",
-        legend
+    component <- tags$fieldset(
+      class = "form-group",
+      if (!is.null(legend)) {
+        tags$legend(
+          class = "col-form-legend",
+          legend
+        )
+      },
+      tags$div(
+        unnamed_values(args)
       )
-    },
-    tags$div(
-      unnamed_values(args)
     )
-  )
 
-  component <- tag_attributes_add(component, named_values(args))
-
-  attach_dependencies(component)
+    tag_attributes_add(component, named_values(args))
+  })
 }

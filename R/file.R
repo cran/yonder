@@ -69,33 +69,33 @@ fileInput <- function(id, placeholder = "Choose file", browse = "Browse", ...,
     )
   }
 
-  if (length(accept) > 1) {
-    accept <- paste(accept, collapse = ",")
-  }
+  dep_attach({
+    if (length(accept) > 1) {
+      accept <- paste(accept, collapse = ",")
+    }
 
-  component <- tags$div(
-    class = "yonder-file custom-file",
-    id = id,
-    tags$input(
-      type = "file",
-      class = "custom-file-input",
-      accept = accept,
-      multiple = if (multiple) NA,
-      autocomplete = "off"
-    ),
-    tags$label(
-      class = "custom-file-label",
-      `data-browse` = browse,
-      placeholder
-    ),
     tags$div(
-      class = "valid-feedback"
-    ),
-    tags$div(
-      class = "invalid-feedback"
-    ),
-    ...
-  )
-
-  attach_dependencies(component)
+      class = "yonder-file custom-file",
+      id = id,
+      tags$input(
+        type = "file",
+        class = "custom-file-input",
+        accept = accept,
+        multiple = if (multiple) NA,
+        autocomplete = "off"
+      ),
+      tags$label(
+        class = "custom-file-label",
+        `data-browse` = browse,
+        placeholder
+      ),
+      tags$div(
+        class = "valid-feedback"
+      ),
+      tags$div(
+        class = "invalid-feedback"
+      ),
+      ...
+    )
+  })
 }

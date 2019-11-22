@@ -77,22 +77,22 @@ rangeInput <- function(id, min = 0, max = 100, default = min, step = 1, ...) {
     )
   }
 
-  component <- tags$div(
-    class = "yonder-range",
-    id = id,
-    tags$input(
-      class = "custom-range",
-      type = "range",
-      step = step,
-      min = min,
-      max = max,
-      value = default,
-      autocomplete = "off"
-    ),
-    ...
-  )
-
-  attach_dependencies(component)
+  dep_attach({
+    tags$div(
+      class = "yonder-range",
+      id = id,
+      tags$input(
+        class = "custom-range",
+        type = "range",
+        step = step,
+        min = min,
+        max = max,
+        value = default,
+        autocomplete = "off"
+      ),
+      ...
+    )
+  })
 }
 
 #' @rdname rangeInput

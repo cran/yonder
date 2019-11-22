@@ -7,8 +7,8 @@
 \alias{updateGroupSelectInput}
 \title{Select inputs}
 \usage{
-selectInput(id, choices = NULL, values = choices,
-  selected = values[[1]], ...)
+selectInput(id, choices = NULL, values = choices, selected = NULL,
+  ..., placeholder = NULL)
 
 updateSelectInput(id, choices = NULL, values = choices,
   selected = NULL, enable = NULL, disable = NULL, valid = NULL,
@@ -30,11 +30,14 @@ updateGroupSelectInput(id, choices = NULL, values = choices,
 choices, defaults to \code{choices}.}
 
 \item{selected}{One of \code{values} indicating the default value of the input,
-defaults to \code{values[[1]]}.}
+defaults to \code{NULL}.}
 
 \item{...}{Additional named arguments passed as HTML attributes to the
 parent element or tag elements passed as child elements to the parent
 element.}
+
+\item{placeholder}{A character string specifying the placeholder text of
+the select input, defaults to \code{NULL}.}
 
 \item{enable}{One of \code{values} specifying particular choices to enable or
 \code{TRUE} specifying the entire input is enabled, defaults to \code{NULL}.}
@@ -78,10 +81,10 @@ dropdown input value, the value of the text input, and any static addons.}
 }
 \description{
 Create a select input. Select elements typically appear as a simple menu of
-choices and may have one or more selected values, see the \code{multiple}
-argument. A group select input is a select input with one or two additional
-components. These addon components are used to change the reactivity or value
-of the input, see Details for more information.
+choices and may have one selected choice. A group select input is a select
+input with one or two additional components. These addon components are used
+to change the reactivity or value of the input, see Details for more
+information.
 }
 \examples{
 

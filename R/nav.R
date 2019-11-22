@@ -123,21 +123,21 @@ navInput <- function(id, choices = NULL, values = choices,
   assert_selected(length = 1)
   assert_possible(appearance, c("links", "pills", "tabs"))
 
-  items <- map_navitems(choices, values, selected)
+  dep_attach({
+    items <- map_navitems(choices, values, selected)
 
-  component <- tags$ul(
-    class = str_collate(
-      "yonder-nav",
-      "nav",
-      if (fill) "nav-fill",
-      if (appearance != "links") paste0("nav-", appearance)
-    ),
-    id = id,
-    items,
-    ...
-  )
-
-  attach_dependencies(component)
+    tags$ul(
+      class = str_collate(
+        "yonder-nav",
+        "nav",
+        if (fill) "nav-fill",
+        if (appearance != "links") paste0("nav-", appearance)
+      ),
+      id = id,
+      items,
+      ...
+    )
+  })
 }
 
 #' @rdname navInput
@@ -166,6 +166,10 @@ updateNavInput <- function(id, choices = NULL, values = choices,
 }
 
 map_navitems <- function(choices, values, selected) {
+  if (is.null(choices) && is.null(values)) {
+    return(NULL)
+  }
+
   selected <- values %in% selected
 
   Map(
@@ -416,25 +420,25 @@ map_navitems <- function(choices, values, selected) {
 #' # above.
 #'
 navContent <- function(...) {
-  attach_dependencies(
+  dep_attach({
     tags$div(class = "tab-content", ...)
-  )
+  })
 }
 
 #' @rdname navContent
 #' @export
 navPane <- function(id, ..., fade = TRUE) {
-  pane <- tags$div(
-    class = str_collate(
-      "tab-pane",
-      if (fade) "fade"
-    ),
-    role = "tab-panel",
-    id = id,
-    ...
-  )
-
-  attach_dependencies(pane)
+  dep_attach({
+    tags$div(
+      class = str_collate(
+        "tab-pane",
+        if (fade) "fade"
+      ),
+      role = "tab-panel",
+      id = id,
+      ...
+    )
+  })
 }
 
 #' @rdname navContent
