@@ -7,19 +7,48 @@
 \alias{updateGroupSelectInput}
 \title{Select inputs}
 \usage{
-selectInput(id, choices = NULL, values = choices, selected = NULL,
-  ..., placeholder = NULL)
+selectInput(
+  id,
+  choices = NULL,
+  values = choices,
+  selected = values[[1]],
+  ...,
+  placeholder = NULL
+)
 
-updateSelectInput(id, choices = NULL, values = choices,
-  selected = NULL, enable = NULL, disable = NULL, valid = NULL,
-  invalid = NULL, session = getDefaultReactiveDomain())
+updateSelectInput(
+  id,
+  choices = NULL,
+  values = choices,
+  selected = choices[[1]],
+  enable = NULL,
+  disable = NULL,
+  valid = NULL,
+  invalid = NULL,
+  session = getDefaultReactiveDomain()
+)
 
-groupSelectInput(id, choices, values = choices, selected = values[[1]],
-  ..., left = NULL, right = NULL)
+groupSelectInput(
+  id,
+  choices,
+  values = choices,
+  selected = values[[1]],
+  ...,
+  left = NULL,
+  right = NULL
+)
 
-updateGroupSelectInput(id, choices = NULL, values = choices,
-  selected = NULL, enable = NULL, disable = NULL, valid = NULL,
-  invalid = NULL, session = getDefaultReactiveDomain())
+updateGroupSelectInput(
+  id,
+  choices = NULL,
+  values = choices,
+  selected = NULL,
+  enable = NULL,
+  disable = NULL,
+  valid = NULL,
+  invalid = NULL,
+  session = getDefaultReactiveDomain()
+)
 }
 \arguments{
 \item{id}{A character string specifying the id of the reactive input.}
@@ -30,7 +59,7 @@ updateGroupSelectInput(id, choices = NULL, values = choices,
 choices, defaults to \code{choices}.}
 
 \item{selected}{One of \code{values} indicating the default value of the input,
-defaults to \code{NULL}.}
+defaults to \code{values[[1]]}.}
 
 \item{...}{Additional named arguments passed as HTML attributes to the
 parent element or tag elements passed as child elements to the parent
@@ -63,7 +92,7 @@ for more information.
 If \code{left} or \code{right} are character vectors, then the group input functions
 like a text input. The value will update and trigger a reactive event when
 the text box is modified. The group input's reactive value is the
-concatention of the static addons specified by \code{left} or \code{right} and the
+concatenation of the static addons specified by \code{left} or \code{right} and the
 value of the text input.
 
 \strong{\code{left} is button or \code{right} is button}
@@ -76,7 +105,7 @@ group input value.
 \strong{\code{left} is a dropdown or \code{right} is a dropdown}
 
 The value of the group input does chance depending on the clicked dropdown
-menu item. The value of the input group is the concatentation of the
+menu item. The value of the input group is the concatenation of the
 dropdown input value, the value of the text input, and any static addons.}
 }
 \description{
@@ -112,13 +141,20 @@ groupSelectInput(
 
 }
 \seealso{
-Other inputs: \code{\link{buttonGroupInput}},
-  \code{\link{buttonInput}}, \code{\link{checkbarInput}},
-  \code{\link{checkboxInput}}, \code{\link{chipInput}},
-  \code{\link{fileInput}}, \code{\link{formInput}},
-  \code{\link{listGroupInput}}, \code{\link{menuInput}},
-  \code{\link{navInput}}, \code{\link{radioInput}},
-  \code{\link{radiobarInput}}, \code{\link{rangeInput}},
-  \code{\link{textInput}}
+Other inputs: 
+\code{\link{buttonGroupInput}()},
+\code{\link{buttonInput}()},
+\code{\link{checkbarInput}()},
+\code{\link{checkboxInput}()},
+\code{\link{chipInput}()},
+\code{\link{fileInput}()},
+\code{\link{formInput}()},
+\code{\link{listGroupInput}()},
+\code{\link{menuInput}()},
+\code{\link{navInput}()},
+\code{\link{radioInput}()},
+\code{\link{radiobarInput}()},
+\code{\link{rangeInput}()},
+\code{\link{textInput}()}
 }
 \concept{inputs}

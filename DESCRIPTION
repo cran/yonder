@@ -1,7 +1,7 @@
 Package: yonder
 Type: Package
 Title: A Reactive Web Framework Built on 'shiny'
-Version: 0.1.2
+Version: 0.2.0
 Authors@R: c(
     person("Nathan", "Teetor", role = c("aut", "cre"),
       email = "nathanteetor@gmail.com"),
@@ -25,13 +25,12 @@ URL: https://nteetor.github.io/yonder
 BugReports: https://github.com/nteetor/yonder/issues
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 6.1.1
-Depends: R (>= 3.2), shiny (>= 1.1.0)
-Imports: htmltools, magrittr, utils
-Suggests: testthat (>= 2.1.0), knitr, rmarkdown
-VignetteBuilder: knitr
+RoxygenNote: 7.0.2
+Depends: R (>= 3.2), shiny (>= 1.4.0)
+Imports: htmltools (>= 0.4.0), magrittr, utils
+Suggests: testthat (>= 2.1.0)
 NeedsCompilation: no
-Packaged: 2019-11-22 06:21:53 UTC; nteetor
+Packaged: 2020-01-10 18:19:58 UTC; nteetor
 Author: Nathan Teetor [aut, cre],
   The Bootstrap Authors [cph] (Bootstrap library),
   Twitter, Inc [cph] (Bootstrap library),
@@ -40,4 +39,4 @@ Author: Nathan Teetor [aut, cre],
   Johann Servoire [ctb, cph] (bs-custom-file-input library)
 Maintainer: Nathan Teetor <nathanteetor@gmail.com>
 Repository: CRAN
-Date/Publication: 2019-11-22 09:10:02 UTC
+Date/Publication: 2020-01-10 21:20:07 UTC

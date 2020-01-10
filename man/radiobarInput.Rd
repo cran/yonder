@@ -5,12 +5,17 @@
 \alias{updateRadiobarInput}
 \title{Radiobar inputs}
 \usage{
-radiobarInput(id, choices, values = choices, selected = values[[1]],
-  ...)
+radiobarInput(id, choices, values = choices, selected = values[[1]], ...)
 
-updateRadiobarInput(id, choices = NULL, values = choices,
-  selected = NULL, enable = NULL, disable = NULL,
-  session = getDefaultReactiveDomain())
+updateRadiobarInput(
+  id,
+  choices = NULL,
+  values = choices,
+  selected = NULL,
+  enable = NULL,
+  disable = NULL,
+  session = getDefaultReactiveDomain()
+)
 }
 \arguments{
 \item{id}{A character string specifying the id of the reactive input.}
@@ -22,7 +27,7 @@ labels of the input's choices.}
 defaults to \code{choices}.}
 
 \item{selected}{One of \code{values} specifying the input's default selected
-choice, defualts to \code{values[[1]]}.}
+choice, defaults to \code{values[[1]]}.}
 
 \item{...}{Additional named arguments passed as HTML attributes to the
 parent element or tag elements passed as child elements to the parent
@@ -59,13 +64,20 @@ radiobarInput(
 
 }
 \seealso{
-Other inputs: \code{\link{buttonGroupInput}},
-  \code{\link{buttonInput}}, \code{\link{checkbarInput}},
-  \code{\link{checkboxInput}}, \code{\link{chipInput}},
-  \code{\link{fileInput}}, \code{\link{formInput}},
-  \code{\link{listGroupInput}}, \code{\link{menuInput}},
-  \code{\link{navInput}}, \code{\link{radioInput}},
-  \code{\link{rangeInput}}, \code{\link{selectInput}},
-  \code{\link{textInput}}
+Other inputs: 
+\code{\link{buttonGroupInput}()},
+\code{\link{buttonInput}()},
+\code{\link{checkbarInput}()},
+\code{\link{checkboxInput}()},
+\code{\link{chipInput}()},
+\code{\link{fileInput}()},
+\code{\link{formInput}()},
+\code{\link{listGroupInput}()},
+\code{\link{menuInput}()},
+\code{\link{navInput}()},
+\code{\link{radioInput}()},
+\code{\link{rangeInput}()},
+\code{\link{selectInput}()},
+\code{\link{textInput}()}
 }
 \concept{inputs}

@@ -10,17 +10,45 @@
 \usage{
 textInput(id, value = NULL, placeholder = NULL, ..., type = "text")
 
-numberInput(id, value = NULL, placeholder = NULL, ..., min = NULL,
-  max = NULL, step = 1)
+numberInput(
+  id,
+  value = NULL,
+  placeholder = NULL,
+  ...,
+  min = NULL,
+  max = NULL,
+  step = 1
+)
 
-updateTextInput(id, value = NULL, enable = NULL, disable = NULL,
-  valid = NULL, invalid = NULL, session = getDefaultReactiveDomain())
+updateTextInput(
+  id,
+  value = NULL,
+  enable = NULL,
+  disable = NULL,
+  valid = NULL,
+  invalid = NULL,
+  session = getDefaultReactiveDomain()
+)
 
-groupTextInput(id, value = NULL, placeholder = NULL, ...,
-  type = "text", left = NULL, right = NULL)
+groupTextInput(
+  id,
+  value = NULL,
+  placeholder = NULL,
+  ...,
+  type = "text",
+  left = NULL,
+  right = NULL
+)
 
-updateGroupTextInput(id, value = NULL, enable = NULL, disable = NULL,
-  valid = NULL, invalid = NULL, session = getDefaultReactiveDomain())
+updateGroupTextInput(
+  id,
+  value = NULL,
+  enable = NULL,
+  disable = NULL,
+  valid = NULL,
+  invalid = NULL,
+  session = getDefaultReactiveDomain()
+)
 }
 \arguments{
 \item{id}{A character string specifying the id of the reactive input.}
@@ -72,7 +100,7 @@ for more information.
 If \code{left} or \code{right} are character vectors, then the group input functions
 like a text input. The value will update and trigger a reactive event when
 the text box is modified. The group input's reactive value is the
-concatention of the static addons specified by \code{left} or \code{right} and the
+concatenation of the static addons specified by \code{left} or \code{right} and the
 value of the text input.
 
 \strong{\code{left} is button or \code{right} is button}
@@ -85,7 +113,7 @@ group input value.
 \strong{\code{left} is a dropdown or \code{right} is a dropdown}
 
 The value of the group input does chance depending on the clicked dropdown
-menu item. The value of the input group is the concatentation of the
+menu item. The value of the input group is the concatenation of the
 dropdown input value, the value of the text input, and any static addons.}
 
 \item{right}{A character vector specifying static addons or
@@ -98,7 +126,7 @@ for more information.
 If \code{left} or \code{right} are character vectors, then the group input functions
 like a text input. The value will update and trigger a reactive event when
 the text box is modified. The group input's reactive value is the
-concatention of the static addons specified by \code{left} or \code{right} and the
+concatenation of the static addons specified by \code{left} or \code{right} and the
 value of the text input.
 
 \strong{\code{left} is button or \code{right} is button}
@@ -111,7 +139,7 @@ group input value.
 \strong{\code{left} is a dropdown or \code{right} is a dropdown}
 
 The value of the group input does chance depending on the clicked dropdown
-menu item. The value of the input group is the concatentation of the
+menu item. The value of the input group is the concatenation of the
 dropdown input value, the value of the text input, and any static addons.}
 }
 \description{
@@ -144,13 +172,20 @@ numberInput(
 
 }
 \seealso{
-Other inputs: \code{\link{buttonGroupInput}},
-  \code{\link{buttonInput}}, \code{\link{checkbarInput}},
-  \code{\link{checkboxInput}}, \code{\link{chipInput}},
-  \code{\link{fileInput}}, \code{\link{formInput}},
-  \code{\link{listGroupInput}}, \code{\link{menuInput}},
-  \code{\link{navInput}}, \code{\link{radioInput}},
-  \code{\link{radiobarInput}}, \code{\link{rangeInput}},
-  \code{\link{selectInput}}
+Other inputs: 
+\code{\link{buttonGroupInput}()},
+\code{\link{buttonInput}()},
+\code{\link{checkbarInput}()},
+\code{\link{checkboxInput}()},
+\code{\link{chipInput}()},
+\code{\link{fileInput}()},
+\code{\link{formInput}()},
+\code{\link{listGroupInput}()},
+\code{\link{menuInput}()},
+\code{\link{navInput}()},
+\code{\link{radioInput}()},
+\code{\link{radiobarInput}()},
+\code{\link{rangeInput}()},
+\code{\link{selectInput}()}
 }
 \concept{inputs}

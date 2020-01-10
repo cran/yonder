@@ -11,7 +11,7 @@ scroll(tag, direction = "vertical")
 
 \item{direction}{One of \code{"horizontal"} or \code{"vertical"} specifying which
 direction to scroll overflowing content, defaults to \code{"vertical"}, in which
-case the content may croll up and down.}
+case the content may scroll up and down.}
 }
 \description{
 Many of the applications you build despite a complex layout will still fit
@@ -34,11 +34,17 @@ div(
 
 }
 \seealso{
-Other design utilities: \code{\link{active}},
-  \code{\link{affix}}, \code{\link{background}},
-  \code{\link{border}}, \code{\link{display}},
-  \code{\link{float}}, \code{\link{font}},
-  \code{\link{height}}, \code{\link{padding}},
-  \code{\link{shadow}}, \code{\link{width}}
+Other design utilities: 
+\code{\link{active}()},
+\code{\link{affix}()},
+\code{\link{background}()},
+\code{\link{border}()},
+\code{\link{display}()},
+\code{\link{float}()},
+\code{\link{font}()},
+\code{\link{height}()},
+\code{\link{padding}()},
+\code{\link{shadow}()},
+\code{\link{width}()}
 }
 \concept{design utilities}

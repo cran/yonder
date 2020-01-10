@@ -16,7 +16,7 @@
 #'   choices, defaults to `choices`.
 #'
 #' @param selected One of `values` indicating the default value of the input,
-#'   defaults to `NULL`.
+#'   defaults to `values[[1]]`.
 #'
 #' @param placeholder A character string specifying the placeholder text of
 #'   the select input, defaults to `NULL`.
@@ -31,7 +31,7 @@
 #'   If `left` or `right` are character vectors, then the group input functions
 #'   like a text input. The value will update and trigger a reactive event when
 #'   the text box is modified. The group input's reactive value is the
-#'   concatention of the static addons specified by `left` or `right` and the
+#'   concatenation of the static addons specified by `left` or `right` and the
 #'   value of the text input.
 #'
 #'   **`left` is button or `right` is button**
@@ -44,7 +44,7 @@
 #'   **`left` is a dropdown or `right` is a dropdown**
 #'
 #'   The value of the group input does chance depending on the clicked dropdown
-#'   menu item. The value of the input group is the concatentation of the
+#'   menu item. The value of the input group is the concatenation of the
 #'   dropdown input value, the value of the text input, and any static addons.
 #'
 #' @family inputs
@@ -74,7 +74,7 @@
 #'   width(10)
 #'
 selectInput <- function(id, choices = NULL, values = choices,
-                        selected = NULL, ..., placeholder = NULL) {
+                        selected = values[[1]], ..., placeholder = NULL) {
   assert_id()
   assert_choices()
   assert_selected(length = 1)
@@ -90,7 +90,7 @@ selectInput <- function(id, choices = NULL, values = choices,
         class = "form-control custom-select",
         `data-toggle` = "dropdown",
         `data-boundary` = "window",
-        placeholder = placeholder,
+        placeholder = choices[values %in% selected][1] %||% placeholder,
         `data-original-placeholder` = placeholder
       ),
       tags$div(
@@ -107,7 +107,7 @@ selectInput <- function(id, choices = NULL, values = choices,
 #' @rdname selectInput
 #' @export
 updateSelectInput <- function(id, choices = NULL, values = choices,
-                              selected = NULL, enable = NULL,
+                              selected = choices[[1]], enable = NULL,
                               disable = NULL,
                               valid = NULL, invalid = NULL,
                               session = getDefaultReactiveDomain()) {

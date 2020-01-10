@@ -4,8 +4,14 @@
 \alias{flex}
 \title{Flex layout}
 \usage{
-flex(tag, direction = NULL, justify = NULL, align = NULL,
-  wrap = NULL, reverse = NULL)
+flex(
+  tag,
+  direction = NULL,
+  justify = NULL,
+  align = NULL,
+  wrap = NULL,
+  reverse = NULL
+)
 }
 \arguments{
 \item{tag}{A tag element.}
@@ -26,8 +32,8 @@ defaults to \code{NULL}. See the \strong{align} section below for more on how th
 different values affect vertical spacing.}
 
 \item{wrap}{A \link{responsive} argument. One of \code{TRUE} or \code{FALSE} specifying
-whether to wrap flex items inside the flex containter, \code{tag}, defaults
-to \code{NULL}. If \code{TRUE} items wrap inside the container, if \code{FALSE} items will
+whether to wrap flex items inside the flex container, \code{tag}, defaults to
+\code{NULL}. If \code{TRUE} items wrap inside the container, if \code{FALSE} items will
 not wrap. See the \strong{wrap} section below for more.}
 
 \item{reverse}{A \link{responsive} argument. One of \code{TRUE} or \code{FALSE} specifying
@@ -181,8 +187,11 @@ div(
 
 }
 \seealso{
-Other layout functions: \code{\link{column}},
-  \code{\link{fieldset}}, \code{\link{navbar}},
-  \code{\link{responsive}}, \code{\link{webpage}}
+Other layout functions: 
+\code{\link{column}()},
+\code{\link{fieldset}()},
+\code{\link{navbar}()},
+\code{\link{responsive}},
+\code{\link{webpage}()}
 }
 \concept{layout functions}
